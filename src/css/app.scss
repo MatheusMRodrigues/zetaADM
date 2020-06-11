@@ -1,0 +1,23 @@
+// app global css in SCSS form
+
+@charset "UTF-8";
+
+// FONT
+
+@font-face {
+    font-family: customfont;
+    src: url(../statics/fonts/BalooPaaji2-Regular.ttf);
+  }
+  
+  @font-face {
+    font-family: customfont2;
+    src: url(../statics/fonts/BalooPaaji2-Medium.ttf);
+  }
+  
+  .app-font {
+    font-family: 'customfont';
+  }
+  
+  .app-font-medium {
+    font-family: 'customfont2';
+  }
