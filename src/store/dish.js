@@ -69,6 +69,22 @@ const actions = {
                 }
             )
         })
+    },
+
+    createMenu ({}, payload) {
+        console.log(payload)
+        let docID
+        db.collection('menu').doc(payload.menu.value+'s').collection(payload.menu.value).add({
+    
+        })
+        .then(response => {
+            docID = response.id
+            db.collection('menu').doc(payload.menu.value+'s').collection(payload.menu.value).doc(docID).update({
+                [payload.menu.value+"ID"]: docID,
+                menuDate: payload.menuDate,
+                items: payload.dishes
+            })
+        })
     }
 
 }
@@ -93,9 +109,9 @@ let tomorrow = moment().add(1, 'days').format('DD/MM/YYYY');
 //     return Object.values(state.menu.breakfasts || {}).filter(i => i.menuDate == tomorrow);
 // }
 
-// const dishFinder = (state) => (id) => {
-//     return Object.values(state.dishes || {}).find(d => d.dishID == id)
-// }
+const dishFinder = (state) => (id) => {
+    return Object.values(state.dishes || {}).find(d => d.dishID == id)
+}
 
 // ================================================
 
