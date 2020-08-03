@@ -10,48 +10,47 @@
 
     <q-card-section>
     <q-form @submit.prevent="submitForm" class="q-gutter-md">
+    <div class="row col-12">
+      <div>
+        <div class="app-font-medium text-red-5 text-h6">Imagem:</div>
 
-      <div class="row col-12">
         <div>
-          <div class="app-font-medium text-red-5 text-h6">Imagem:</div>
+          <q-img
+            :src="dish.imagePreview"
+            :ratio="16/9"
+            style="width: 30em"
+          />
+        </div>
 
-          <div>
-            <q-img
-              :src="dish.imagePreview"
-              :ratio="16/9"
-              style="width: 30em"
-            />
-          </div>
+        <input class="inputfile" type="file" name="file" id="file" @change="previewImage" accept="image/*" >
+        <label for="file" class="text-center" style="width: 24em"> <q-icon name="las la-file-upload" size="md"></q-icon> Selecionar imagem</label>
+        </div>
+      <div class="col q-ml-md">
+        <div class="app-font-medium text-red-5 text-h6">Nome:</div>
 
-          <input class="inputfile" type="file" name="file" id="file" @change="previewImage" accept="image/*" >
-          <label for="file" class="text-center" style="width: 24em"> <q-icon name="las la-file-upload" size="md"></q-icon> Selecionar imagem</label>
-          </div>
-        <div class="col q-ml-md">
-          <div class="app-font-medium text-red-5 text-h6">Nome:</div>
+          <q-input
+            filled
+            v-model="dish.name"
+            placeholder="EX: Feijoada"
+            lazy-rules
+            :rules="[ val => val && val.length > 0 || 'Please type something']"
+          />
 
-            <q-input
-              filled
-              v-model="dish.name"
-              placeholder="EX: Feijoada"
-              lazy-rules
-              :rules="[ val => val && val.length > 0 || 'Please type something']"
-            />
+          <div class="app-font-medium text-red-5 text-h6">Categoria:</div>
 
-            <div class="app-font-medium text-red-5 text-h6">Categoria:</div>
+          <q-select filled v-model="dish.type" :options="options" label="Selecione uma categoria" />
 
-            <q-select filled v-model="dish.type" :options="options" label="Selecione uma categoria" />
+          <div class="app-font-medium text-red-5 text-h6">Descrição:</div>
 
-            <div class="app-font-medium text-red-5 text-h6">Descrição:</div>
-
-            <q-input
-              v-model="dish.description"
-              placeholder="Descrição"
-              filled
-              type="textarea"
-              style="height: 90px"
-            />
-          </div>
-      </div>
+          <q-input
+            v-model="dish.description"
+            placeholder="Descrição"
+            filled
+            type="textarea"
+            style="height: 90px"
+          />
+        </div>
+    </div>
 
       <div class="app-font-medium text-red-5 text-h6">Contem:</div>
 
@@ -116,14 +115,36 @@
   }
 
   .inputfile + label * {
-	pointer-events: none;
-}
+	  pointer-events: none;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  /* width */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #ef5350;
+  }
+
 </style>
 
 <script>
 import { mapActions } from "vuex"
 export default {
   name: 'PageIndex',
+
+  props: ['dishData'],
 
   data () {
     return {
@@ -132,18 +153,23 @@ export default {
       ],
       isVegan: false,
       dish:{
-        name: '',
-        type: '',
-        description: '',
+        dishID: this.dishData.dishID,
+        name: this.dishData.itemName,
+        type: this.dishData.itemType,
+        description: this.dishData.itemDescription,
         containAdd: '',
-        contain: [],
-        vegan: null,
-        vegie: null,
+        contain: this.dishData.itemHave,
+        vegan: this.dishData.vegan,
+        vegie: this.dishData.vegie,
         image: null,
-        imagePreview: '/statics/placeholder.png',
+        imagePreview: this.dishData.itemImage,
       }
       
     }
+  },
+
+  mounted() {
+    console.log(this.dishData)
   },
 
   watch: {
@@ -161,7 +187,7 @@ export default {
   },
 
   methods: {
-    ...mapActions("dish", ["createDish"]),
+    ...mapActions("dish", ["editDish"]),
 
     addItem () {
       this.dish.contain.push(this.dish.containAdd)
@@ -181,7 +207,7 @@ export default {
     },
 
     submitForm () {
-      this.createDish(this.dish)
+      this.editDish(this.dish)
     }
   }
 }

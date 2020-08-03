@@ -11,11 +11,17 @@ export default {
   name: 'App',
 
   methods: {
-    ...mapActions("dish", ["bindDishes"]),
+    ...mapActions("dish", ["bindDishes", "bindBreakfast", "bindLunch", "bindDinner", "bindBreakfast2", "bindLunch2", "bindDinner2"]),
   },
 
   mounted () {
     this.bindDishes()
+    this.bindLunch()
+    this.bindBreakfast()
+    this.bindDinner()
+    this.bindLunch2()
+    this.bindBreakfast2()
+    this.bindDinner2()
   }
 }
 </script>

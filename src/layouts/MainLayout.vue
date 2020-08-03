@@ -91,9 +91,7 @@ export default {
   },
 
   mounted () {
-    console.log(this.$route.path)
     if(this.$route.path === '/'){
-      console.log('ta entrando')
       this.dashboard = true
     }
   },

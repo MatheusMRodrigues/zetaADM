@@ -10,7 +10,10 @@
       </q-bar>
 
       <q-card-section>
-      <q-form @submit.prevent="submitForm" class="q-pa-sm">
+      <q-inner-loading :showing="visible">
+        <q-spinner-gears size="50px" color="primary" />
+      </q-inner-loading>
+      <q-form v-show="visible == false" @submit.prevent="submitForm" class="q-pa-sm">
 
         <div class="app-font-medium text-red-5 text-h6">Refeição:</div>
 
@@ -31,7 +34,7 @@
           <q-item class="q-px-sm" v-for="(item, index) in listDishes" :key="index">
             <q-item-section thumbnail>
               <q-avatar rounded>
-                <q-img :src="item.itemImage" :ratio="16 / 9" style="width: 30vw"/>
+                <q-img :src="item.itemImage" :ratio="1 / 1" style="width: 30vw"/>
               </q-avatar>
             </q-item-section>
             <q-item-section>{{item.itemName}}</q-item-section>
@@ -63,7 +66,7 @@
         <div class="row justify-evenly q-gutter-lg">
           <div v-for="dish in dishes" :key="dish.dishID">
             <div @click="addItem(dish)">
-              <q-icon v-show="auxList.includes(dish.dishID)" class="absolute text-green bg-white q-pa-md checkIcon" size="2em" name="las la-check" />
+              <q-icon v-show="auxList.includes(dish.dishID)" class="absolute text-green bg-white q-pa-md checkIcon2" size="2em" name="las la-check" />
               <dish :dish="dish"/>
             </div>
           </div>
@@ -78,7 +81,7 @@
 </template>
 
 <style scoped>
-  .checkIcon{
+  .checkIcon2{
     transform: translate(160px, 5px);
     z-index: 5;
     border-radius: 50px;
@@ -104,13 +107,14 @@
   }
 
   .inputfile + label * {
-	pointer-events: none;
-}
+	  pointer-events: none;
+  }
 </style>
 
 <script>
 import { mapGetters, mapActions } from "vuex"
 import {uid} from "quasar"
+
 export default {
   name: 'PageIndex',
 
@@ -136,6 +140,7 @@ export default {
           value: 'dinner'
         }
       ],
+      visible: false,
       isVegan: false,
       dishPicker: false,
       listDishes: [],
@@ -170,7 +175,6 @@ export default {
         const indexAuxList = this.auxList.indexOf(dish.dishID)
         this.auxList.splice(indexAuxList, 1)
         delete this.menu.dishes[indexAuxList]
-        console.log(indexAuxList)
       }
       else{
         this.listDishes.push(dish)
@@ -178,17 +182,21 @@ export default {
         this.menu.dishes[this.count] = {dishID: dish.dishID, itemID: uid(), totalRating: 0, userRating: {}}
         this.count += 1
       }
-      console.log(this.menu.dishes)
     },
 
     submitForm () {
-      this.createMenu(this.menu)
+      this.visible = true
+      this.createMenu(this.menu).then(result => {
+        this.$emit('beleza')
+      })
+      .catch(error => {
+        console.log(error)
+      })
     }
   },
 
   mounted () {
     // this.bindDishes()
-    console.log(this.auxList)
 
   }
 }
